@@ -1,0 +1,153 @@
+Ansible zero to hero.
+
+Create 2 ec2 instances one with ansible installed and another one is a target server where we can login into target server without using password with ansible.
+
+
+Ansible instance:
+----------------
+*sudo apt update
+*sudo apt install ansible
+*ansible --version
+ssh-keygen
+copy the public key and open the target server and * ssh-keygen * ls ~/.ssh/
+
+* vim authorized keys - Now paste the public key of ansible server.
+
+Go to ansible server
+* ssh private Ip of target server it will login without password.  Alternate for this is * ssh-copy-id private ip but this is not with al permissions.
+
+
+
+ssh-copy-id -f "-o IdentityFile ~/Downloads/practicekey.pem" ubuntu@13.235.67.2
+
+
+
+------Ansible server
+In shell script we call a file as shell script, in the same way ansible file is known as ansible playbooks. We can run playbooks/directly run ansible commands.
+
+------- Ansible adhoc commands: -------
+
+Inverntry file is known as the file of ip addresses of the server
+
+* vim inventory
+* ansible -i inventory all -m "shell" -a "touch dveopsclass"
+m - module, a - argument ( the commands we use)
+Difference between ansible adhoc vs ansible playbooks
+... Adhoc commands are used for one or two commands 
+... Playbooks are used for order of commands
+
+* ansible -i inventory all -m "shell" -a "nproc"
+* ansible -i inventory all -m "shell" -a "df"
+* ansible -i iventory all -m "shell" -a "ls -ltr"
+
+Interview question 
+
+
+Q) HOW DO U GROUP CERTAIN SERVERS IN ANSIBLE/ EXECUTE A COMMANDS TO CERTAIN NOF SERVERS?
+
+A) IN INVENTORY FILE WE SAVE IP'S WITH HELP OF MENTIONING WEBSERVERS OR DB SERVERS USING BRACKETS [WEB SERVERS] AND BELOW THAT IP'S
+
+IF WE WANT TO EXECUTE A COMMAND ONLY IN DBSERVERS THEN USE:
+* ansible -i inventory all -m "shell" -a "nproc"
+
+ANSIBLE PLAYBOOK USE CASE TO EXECUTE MULTIPLE TASKS
+--- Install nginx and start nginx using playbook.
+
+------ Playbbok - YAML------------
+create first-playbook.yml file
+---
+- name: Install Nginx
+  hosts: all
+  become: true
+   
+  tasks: 
+    - name: Install Nginx
+      apt:
+	name: nginx
+	state: present
+    - name: Start Nginx
+      service:
+	name: nginx
+	state: started
+
+ansible is used to run ansible adhoc commands and ansible-playbook is used to run the file where we written playbooks
+
+* ansible-playbook -i inventory first-playbook.yml
+
+[[[[[[[[[[- name: Install Nginx
+  hosts: all
+  become: true
+   
+  tasks: 
+    - name: Install Nginx
+      apt:
+        pkg: nginx
+        state: present
+
+    - name: Start Nginx
+      service:
+        name: nginx
+        state: started
+
+ChatGPT
+The provided snippet is an Ansible playbook written in YAML format. Let's break down each part:
+
+YAML Document Start (---):
+
+This indicates the start of a YAML document. YAML documents can contain multiple YAML structures such as lists, maps, and scalars.
+Play Definition:
+
+- name: Install Nginx: This line specifies the name of the play, which is "Install Nginx".
+hosts: all: This line specifies the target hosts for this play. In this case, it targets all hosts defined in the inventory.
+become: true: This line indicates that the tasks in this play should be executed with elevated privileges, typically using sudo.
+Task Definitions:
+
+Tasks are defined under the tasks key within a play. Each task performs a specific action on the target hosts.
+First Task: Install Nginx:
+
+- name: Install Nginx: This line specifies the name of the task, which is "Install Nginx".
+apt: This is the Ansible module used to manage packages on Debian-based systems like Ubuntu. It is being used to install the Nginx package.
+pkg: nginx: This parameter specifies the name of the package to install, which is "nginx".
+state: present: This parameter specifies that the package should be in the "present" state, meaning it should be installed.
+Second Task: Start Nginx:
+
+- name: Start Nginx: This line specifies the name of the task, which is "Start Nginx".
+service: This is the Ansible module used to manage system services. It is being used to start the Nginx service.
+name: nginx: This parameter specifies the name of the service to manage, which is "nginx".
+state: started: This parameter specifies that the service should be in the "started" state, meaning it should be running.]]]]]]]]]]]]]]]]
+
+++++ Create 3 ec2 instances for this we can use terraform because terraform is an infrastructure as a service tool. ( This can be done using ansible but terraform is IAC )
+++++ And make one instance as master and remaining as slave using ansible.
++++++ For example if we are havin 100 tasks and it is impossible to write a playbook and made it work in a yaml file.
+
+&&&&& Ansible roles are the efficient way used to write playbooks in an efficient way.
+
+
+*mkdir second-playbook/
+ *cd second-playbook/
+* ansible-galaxy role init kubernates
+* ls
+ls kubernetes/
+ls -ltr kubernetes/
+
+To make a playbook iin a structured way use ansible-galaxy role init kubernetes so that it will create files required
+
+
+From the files created "tasks" is the folder where we create playbook.tml file
+
+meta file is used to write meta data.
+
+defaults file - variables.
+
+tests - unit tests
+
+handlers - handiling exceptions
+
+files - pass the files to tasks on another machine
+
+templates: basic templates
+
+
+Akhil@123
+cd /etc/ssh/sshd
+change password yes

@@ -1,0 +1,70 @@
+
+Refer: 
+https://medium.com/featurepreneur/deploying-a-flask-app-to-kubernetes-f05c93866aff
+
+
+vim deployment.yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-test-service
+spec:
+  selector:
+    app: flask-test-app
+  ports:
+    - protocol: "TCP"
+      port: 6000
+      targetPort: 5000
+  type: LoadBalancer
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-test-app
+spec:
+  selector:
+    matchLabels:
+      app: flask-test-app
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: flask-test-app
+    spec:
+      containers:
+        - name: flask-test-app
+          image: docker.io/akhilprabhu2005/kube-service-python:v1
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 5000
+      imagePullSecrets:
+        - name: my-registry-secret
+
+
+
+
+ vim deployment.yaml
+  630  kubectl create secret docker-registry my-registry-secret   --docker-server=https://index.docker.io/v1/   --docker-username=akhilprabhu2005   --docker-password=Akhil@2005  --docker-email=akhilprabhu2005@gmail.com
+  631  kubectl create secret docker-registry my-registry-secret   --docker-server=https://index.docker.io/v1/   --docker-username=akhilprabhu2005   --docker-password=Akhil@2005   --docker-email=akhilprabhu2005@gmail.com
+  632  kubectl get secrets
+  633  vim deployment.yaml
+  634  kubectl apply -f deployment.yaml
+  635  kubectl get pods
+  636  vim deployment.yaml
+  637  kubectl get secrets
+  638  kubectl describe pod flask-test-app-69b69b4b44-2d9sc
+  639  docker images
+  640  vim deployment.yaml
+  641  kubectl apply -f deployment.yaml
+  642  kubectl get pods
+  643  vim deployment.yaml
+  644  rm -rf deployment.yaml
+  645  vim deployment.yaml
+  646  kubectl apply -f deployment.yaml
+  647  kubectl get pods
+  648  kubectl get svc
+  649  minikube service flask-test-service
+  650  minikube dashboard
+  651  minikube addons enable metrics-server
+  652  minikube dashboard

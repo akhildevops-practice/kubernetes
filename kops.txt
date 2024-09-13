@@ -1,0 +1,22 @@
+What will you learn ?
+1. Popular Kubernetes Distributions
+2. Manage hundreds of Kubernetes clusters 
+
+
+
+- aws s3api create-bucket --bucket kops-aki-storage --region ap-south-1 --create-bucket-configuration LocationConstraint=ap-south-1
+- kops create cluster \
+  --name=demok8scluster.akhilprabhu.local \
+  --state=s3://kops-akhil-storage \
+  --zones=ap-south-1a \
+  --node-count=1 \
+  --node-size=t2.micro \
+  --master-size=t2.micro \
+  --master-volume-size=8 \
+  --node-volume-size=8
+- kops update cluster demok8scluster.k8s.local --yes --admin --state=s3://kops-akhil-storage
+
+- kops validate cluster demok8scluster.k8s.local
+
+
+https://medium.com/@brodartec/hosting-a-static-site-with-https-enabled-using-aws-s3-cloudfront-and-godaddy-826dae41fdc6

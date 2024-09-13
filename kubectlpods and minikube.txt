@@ -1,0 +1,52 @@
+KUBERNETES PODS | DEPLOY YOUR FIRST APP 
+
+1. Container vs Pod 
+2. What is Kubectl && Installation
+3. Minikube Installation
+2. How to create a Pod ?
+3. How to write your first Pod ?
+4. Advantages of Pods ?
+
+- Containers present in single pod can have shared network and resources such as storage. It uses localhost:3000 for communication.
+- Container is present in pod, pod is provided with an  cluster ip by kube-proxy, Pod is just a wrapper created to make lifecycle of DevOps Engineer easy, if we go to git and check pod.yml        we can understand the configuration.
+
+- Kubectl is the cli of of k8's as we have docker cli in docker to interact with docker daemon.
+- Install kubectl on local.
+- Install minikube on local. 
+- Install virtual box
+- Enable virtualization in systems manager and at boot level
+- Installl docker desktop and configure.
+* minikube start --memory=1800 --cpus=2 --disk-size=10240MB --driver=virtualbox
+- This will start a minikube cluster with control plane, of RAM 1800, 2 cpu's, 1GB disk space using virtualbox
+
+* minikube status 
+- to check the status of minikube 
+* kubectl get nodes
+- to see the nodes
+* vi pod.yml
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+
+* kubectl create -f pod.yml
+* kubectl get pods
+* kubectl get pods -o wide
+* minikube ssh
+* curl minikube ip ( we get this from get pods)
+* kubectl delete pod nginx
+
+INTERVIEW QUESTION:
+
+HOW DO YOU DEBUG PODS/ APPLICATIONS ISSUES IN K8'S?
+- kubectl describe pod nginx - complete information of pod
+- kubectl logs nginx
+
+
+

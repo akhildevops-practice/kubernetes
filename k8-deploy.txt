@@ -1,0 +1,53 @@
+KUBERNETES DEPLOYMENT | REPLICASETS 
+
+INTERVIEW QUESTION?
+
+- Explain the difference between container, pod and deployment?
+* Container is created by using docker image with help of docker cli.
+* Pod is nothing but a container with some advantages of having multiple containers in single pod, by this both containers can use same network, storage etc. Applications can be hosted by using local host.
+* Deployment provides container orchestration along with auto healing and autoscaling and zero downtime.
+* We create a deployment >> deployment creates replica-set >> replica-set creates pods in real time.
+
+- kubectl get all -a   to list all k8's services with particular namespace 
+
+
+vim deployment.yml   - To create a deployment.
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
+
+- We are creating a deployment but the deployment creates a replicaset, pod using deployment.yml
+
+* kubectl create -f deployment.yml    (we can use apply/create)
+* kubectl get deploy
+* kunectl get rs
+* kubectl get pods
+Now check the downtime feature of deployment open 2 terminals from first terminal delete the pod,
+kubectl delete pod nginx-deployment-77d8468669-lgnmt
+ from second termial watch te pods using 
+* kubectl get pods -w
+
+Here we can observe that the while the pod is getting deleted at the same time another pod gets initiated and running there will be no downtime at all.
+
+Where as deployment.yml is a highlevel abstraction wraper which creates replica-set and remaining is done by replica-set.
+* Kubernetes controller is responsible for keeping pods in manner and auto healing.

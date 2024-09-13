@@ -1,0 +1,166 @@
+VCUBES KUBERNETES:
+
+gcloud container clusters get-credentials cluster-1 --zone us-central1-c --project lively-transit-429604-s5
+
+Open GCP Cloud Shell and run nginx docker image using docker
+
++++ docker run -p 8080:80 nginx:latest
++++ docker run -d -p 8080:80 nginx:latest (preview web port)
+
++++ cat > index.html
+<html>
+<body bgcolor="blue">
+<h1> This is the GCP Webpage </h1>
+</body>
+</html>
+
++++ docker cp index.html containerid: /usr/share/nginx/html/
+
++++ docker commit nginxcontainerid mywebpage:version1
+
+
+******** After creating a cluster and log in***
++++ kubectl get nodes (to see the nodes in cluster)
++++ kubectl get pods ( to see the pods)
++++ kubectl run --image tomcat webserver (to create pod)
++++ kubectl get pods -o wide (to check on which node is pod )
++++ kubectl delete pods webserver (to delete the pod)
+
+
+
++++ mkdir myk8files
++++ cd myk8files
++++ vim pod-def.yml
++++++++++++++++
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: nginx:1.14.2
+    ports:
+    - containerPort: 80
+
+
+
++++ kubectl create -f pod-def.yml
+kubectl get pods -o wide
+curl IP (in other terminals)
+
++++ kubectl delete -f pod-def.yml
++++ vi deply.yml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-deployment
+  labels:
+    app: nginx
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: nginx
+  template:
+    metadata:
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.14.2
+        ports:
+        - containerPort: 80
+
++++ kubectl create -f deply.yml
++++ kubectl get pods -o wide
++++ kubectl get pods -w (to check the pod is running or not)
+OPEN NEW TERMINAL AND TRY
++++ cd myk8files/
++++ kubectl get pods -o wide
++++ kubectl delete pods nginx-deployment-86dcfdf4c6-v4vvh
+!st terminal
+
+we can see that autohealing is done and pod is running again
++++ vi deply.yml > change replicas to 3
++++ kubectl apply -f deply.yml  to change and apply the config
++++ kubectl get pods -o wide ( we can see 3 pods)
+
+
++++ vi replset
+apiVersion: apps/v1
+kind: ReplicaSet
+metadata:
+  name: frontend
+  labels:
+    app: guestbook
+    tier: frontend
+spec:
+  # modify replicas according to your case
+  replicas: 3
+  selector:
+    matchLabels:
+      tier: frontend
+  template:
+    metadata:
+      labels:
+        tier: frontend
+    spec:
+      containers:
+      - name: php-redis
+        image: us-docker.pkg.dev/google-samples/containers/gke/gb-frontend:v5
++++ kubectl apply -f replset.yml
++++ kubectl get pods
++++ kubectl get pods -w
++++replsetcontrol+++ 2nd terminal
+vi replcontr.yml
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: tomcat
+spec:
+  replicas: 3
+  selector:
+    app: tomcat
+  template:
+    metadata:
+      name: tomcat
+      labels:
+        app: tomcat
+    spec:
+      containers:
+      - name: tomcat
+        image: tomcat
+        ports:
+        - containerPort: 8080
++++ kubectl apply -f replecont.yml
++++ kubectl get pods -o wide
++++ gcloud compute firewall-rules create rule27 --allow tcp:8080
++++ vi replcontr12
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: tomcat
+spec:
+  replicas: 3
+  selector:
+    app: tomcat
+  template:
+    metadata:
+      name: tomcat
+      labels:
+        app: tomcat
+    spec:
+      containers:
+      - name: tomcat
+        image: httpd
+        ports:
+        - containerPort: 80
+	  hostPort: 8080
+
++++ kubectl delete --all pods
+
+
+
+https://community.nextwork.org/c/all-aws-projects/

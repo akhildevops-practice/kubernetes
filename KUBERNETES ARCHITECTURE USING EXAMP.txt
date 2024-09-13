@@ -1,0 +1,37 @@
+KUBERNETES ARCHITECTURE USING EXAMPLES
+
+What will you learn ?
+1. Kubernetes Architecture using Examples 
+2. Kubernetes Control plane
+3. Kubernetes Data plane
+4. Kubernetes Components with Examples
+
+KUBERNETES ARCHITECTURE:
+In Kubernetes:
+- Planes with k8's components:
+
+	- Control Plane works on the Master node. It is responsible for managing the Kubernetes cluster and includes components like the API server, etcd, controller manager, and scheduler.
+
+	- Data Plane works on the Worker nodes. It is responsible for running the actual application workloads and includes components like the Kubelet, container runtime, and Kube-proxy.
+
+	- In container if  we want to run java application we need java runtime in the same way to run a container we need a container runtime, in docker we have docker shim.
+	- In k8's we have pod which is equal to container. Here we have master, worker architecture 
+	- In pod to run a container we have containerd, crio, docker shim it can be use any of those.
+	- Kubelet: It is an agent on each worker node that ensures containers are running in a Pod as defined by the control plane.
+	- Kube-proxy: It is a network proxy that maintains network rules on worker nodes, allowing communication between Pods and services within the Kubernetes cluster.
+	- In master at control node we have core component which is an API server, which exposes the k8's to outside world.
+	- Schedular is used to schedule the jobs that need to run in pods at worker node.
+	- Controller Manager is used to manage the things like autoscaling, k8's contains controller one of the example it manages is replica set.
+	- etcd is the backup folder which contains information of our cluster/pod information to create using the info.
+	- Cloud Controller Manager is an open-source utility which used to create load balancing/storage in EKS from AWS. AWS contains python api such as boto3 using CCM we connect to the 	  cloud platform. In on-premises we don't need this component at all.
+	- Pod: The smallest deployable unit in Kubernetes, consisting of one or more containers that share the same network and storage.
+
+	- etcd: A distributed key-value store that holds the cluster's configuration data, making it accessible to all nodes.
+
+	- API Server: The central management point of the Kubernetes control plane, which exposes the Kubernetes API and processes requests.
+
+	- Scheduler: Assigns Pods to nodes based on resource availability and other constraints, ensuring optimal distribution.
+
+	- Controller Manager: Runs controllers that monitor the cluster's state, making adjustments to maintain the desired state of resources.
+
+	- Cloud Controller Manager: Integrates Kubernetes with the underlying cloud provider, managing cloud-specific resources like load balancers and storage.

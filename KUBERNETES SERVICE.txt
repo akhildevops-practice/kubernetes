@@ -1,0 +1,65 @@
+KUBERNETES SERVICE
+
+Problem 1:
+------------------
+In the last class, we learnt that Kubernetes Deployments can implement the auto-healing capability for pod that goes down using Replica Sets but whenever the new pod comes up, It comes up with a new IP address. So how the customer or user know about this new IP address ?
+
+How is Service Discovery Implemented in Kubernetes ?
+
+Problem 2:
+-----------------
+If you application requires multiple replicas of a pod to serve multi concurrent users, each replica of a pod has unique IP address but customers or users would need a one common IP address or DNS. Just like we all access google.com(DNS) or 8.8.8.8(IP Address) to access google.
+
+How is this implemented in Kubernetes ?
+
+Problem 3:
+-----------------
+How are the applications deployed as Pods in Kubernetes are accessed by external or people from other teams in your organization who don't have access to the Kubernetes cluster ? give me answers to these in simple brief
+
+Here are the brief answers to the problems:
+
+### Problem 1: Service Discovery in Kubernetes
+When a pod goes down and is replaced, it indeed gets a new IP address. Kubernetes handles this through **Service Discovery**, implemented by **Kubernetes Services**. A Service in Kubernetes provides a stable IP address or DNS name that abstracts the underlying dynamic IPs of the pods. When a new pod is created, the service automatically routes traffic to the correct pod, ensuring that clients do not need to know the pod's actual IP address.
+
+### Problem 2: Load Balancing with Kubernetes Services
+To handle multiple replicas of a pod, Kubernetes uses **Services** to provide a single, stable IP address or DNS name. This service acts as a load balancer that distributes incoming traffic among the various pod replicas. For example, a service can expose a group of pod replicas under a single IP or DNS name, making it easy for users to access the application without worrying about the individual pod IP addresses.
+
+### Problem 3: External Access to Kubernetes Pods
+To allow external users or teams to access applications deployed as pods in Kubernetes, **Ingress** or **LoadBalancer** services are used. A **LoadBalancer** service exposes the application externally using a cloud provider's load balancer, giving it an external IP. **Ingress** provides HTTP and HTTPS routing to services within the cluster, often behind a single external IP, enabling external access to the deployed applications.
+
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+* As we all know that k8's have an auto-healing capability while a pod goes it will roll back another pod in no time. But by this process the IP address will be changed, To solve this problem in K8's we have a service - svc, it has a load balancer which is provided by kube-proxy, for example instead of using ip of pod, it gives url of payments.defaultsvc all requests redirect to payments.defaultsvc, the service with load balancer  maintains the load of requests to pods with kube-proxy.
+
+
+- Service discovery in k8's is implemented by using selectors and labels, if the URL is pointed to certain Ip's of pods whenever pod is auto healed even here we can see the same Ip changing issue, this can be solved by service discovery with the help of labels and selectors.
+
+
+SVC will expose and access the application to outside world.
+
+In yaml manifest : Cluster Ip - It discovers and load balances.
+		   Node Port - Using this node port any one inside the organization who has access to nodes outside k8's can access the application.
+		   Load Balancer - For example in aws if we use this with EKS, auto load balancer will be created and application can be accessed by using the public Ip of ALB.
+
+Service Modes:
+
+### Cluster IP Mode:
+- **Cluster IP** is the default type of Kubernetes service, which provides a stable internal IP address within the cluster.
+- It is used for internal communication between pods within the cluster.
+- The service is not accessible from outside the cluster, meaning external clients cannot directly reach it.
+- This is typically used for microservices within the cluster to communicate with each other.
+
+### NodePort Mode:
+- **NodePort** is a service type in Kubernetes that exposes a service on a specific port on all nodes in the cluster.
+- The service can be accessed externally by sending a request to the `<NodeIP>:<NodePort>`.
+- NodePort opens a port on every node in the cluster, and traffic sent to that port on any node is forwarded to the underlying service.
+- It allows external traffic to reach services inside the cluster, but it's generally not recommended for production use due to potential security risks and lack of features like load balancing.
+
+** Load balancer mode
+In summary:
+- **ClusterIP** is for internal communication within the cluster.
+- **NodePort** allows external access to services by exposing a port on each node in the cluster.
+
+
+

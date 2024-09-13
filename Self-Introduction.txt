@@ -1,0 +1,27 @@
+Self-Introduction:
+
+
+Here's the revised version of your introduction with the mention of foundational understanding of CI/CD pipelines:
+
+"Hello, my name is Akhil Prabhu Nallamalla. I hold a Bachelor's degree in Electronics and Communications Engineering and have recently completed a DevOps internship at ELP Aviation Software. During my internship, I gained hands-on experience in automating infrastructure, managing CI/CD pipelines, and deploying containerized applications, primarily using AWS, Docker, and Kubernetes.
+
+One of my key projects involved automating the provisioning of AWS infrastructure using Terraform, which reduced setup time by 60%. I also have a strong foundation in scripting with Shell and YAML, and I am certified as an AWS Cloud Practitioner. Additionally, I have a solid foundational understanding of CI/CD pipelines and their role in streamlining deployment processes.
+
+I am particularly interested in this role at SAchtak because it aligns perfectly with my passion for cloud technologies and automation. I am confident that my experience in infrastructure automation, containerization, and CI/CD processes will allow me to make valuable contributions to your team."
+
+
+
+***********
+
+I understand you're looking for someone with a year of experience. While I may not have that full year, my DevOps internship at ELP Aviation Software gave me substantial hands-on experience in key areas like infrastructure automation, CI/CD pipelines, and containerization using AWS, Docker, and Kubernetes. I contributed to projects such as automating AWS infrastructure with Terraform, which reduced setup time by 60%.
+
+I'm a quick learner with a solid foundation in DevOps practices, and I'm confident that I can quickly adapt and contribute effectively to your team.
+
+
+
+*****************
+
+
+During my internship at ELP Aviation Software, I focused on gaining hands-on experience and developing my skills in DevOps, particularly in areas like infrastructure automation, CI/CD pipelines, and containerization. The internship was a fixed-term program designed specifically for training and development, and the company had limited openings for full-time positions at the end of it.
+
+While a full-time opportunity didn't materialize there, I view the experience as incredibly valuable. It helped me build a strong foundation in DevOps practices, and I am now eager to apply what I've learned in a full-time role where I can continue to grow and contribute.

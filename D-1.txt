@@ -1,0 +1,38 @@
+KUBERENETES:
+1. Docker vs Kubernetes
+2. Why Kubernetes ?
+3. What problems does Kubernetes solve ?
+4. Enterprise Level Support by Kubernetes.
+5. Much more ....
+
+
+	- Docker is a containerization platform, k8's is a container orchestration platform. Containers are ephemeral in nature it means that there are short lived ( retrieve or die )
+- Problems:
+	- Problem - 1 single host: if we have 100 containers on 1 docker host, container 1 kills container 100, not directly but by the resource aquired, if 1 random container will not be 		deleted, in Linux kernel there will be an algorithm which deletes the container based on specifications. 
+
+
+	- Problem-2  AUTO HEALING :  It is a Process without Manual Intervention containers heals itself, it means if a container got killed the app present in it would be not accessible, in 		this case devops engineer cannot be check all the containers are running. Auto healing is the concept where container repairs itself. In containerization platform we don't 		have this concept.
+
+	- Problem - 3 AUTO SCALING: For example if we have an application called Netflix with 100 containers during Christmas we got a load of 100 times more than usual then we need to 		increase the containers based on load either manually or autoscaling, but both  of these are not supported in docker.
+
+	- Problem - 4 ENTERPRISE LEVEL STANDARD : If we are running an application at enterprise level we have some standards to configure such as auto scaling, load balancing, auto               	          healing, firewalls, api gateways etc. But in docker we don't have all of these.
+
+* Solutions:
+	- Solution-1: 
+		Kubernetes solves the problem of Sigle host nature by using a cluster, group of nodes, Kubernetes follows a master slave architecture like Jenkins. As we look at an 			example of 99th container getting affected because of 1st container getting more memory, it can be solved in k8's by if there is any container with affecting status that 		container is shifted to another node of the cluster.
+	- Solution - 2:
+		K8's controls and fix's the damages, if k8's get to know that a container going down even before it goes down k8's roll out a new container.
+	- Solution - 3:
+		In k8's we have replication controller/ replica-set configuration, where we use yaml files to configure. Based on the load when it reaches a certain threshold the nodes    		will auto scale.
+	- Solution - 4: 
+		K8's is originate from Google, it provides all the enterprise level standard, by allowing listed Ip's, whitelisting, black listing etc.
+		
+		
+
+
+
+
+2. Why Kubernetes ?
+3. What problems does Kubernetes solve ?
+4. Enterprise Level Support by Kubernetes.
+5. Much more ....

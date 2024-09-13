@@ -1,0 +1,219 @@
+KUBERNETES SERVICES DEEP DIVE| LIVE DEMO | LEARN TRAFFIC FLOW USING KUBESHARK | #kubernetes
+
+* Load Balancing
+* Service Discovery
+* Node Port
+- Use docker engine instead of docker desktop.
+- Make inbound rules that allows ssh, http, https.
+* minikube start --driver=docker
+* minikube status
+* kubectl get all
+clone docker-zero-to-hero repo.
+cd examples/pythonweb-app
+
+change the dockerfile according to our system 
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+FROM ubuntu
+
+WORKDIR /app
+
+COPY requirements.txt /app
+COPY devops /app
+
+RUN apt-get update && \
+    apt-get install -y python3 python3-pip && \
+    pip install --break-system-packages -r requirements.txt && \
+    cd devops
+
+ENTRYPOINT ["python3"]
+CMD ["manage.py", "runserver", "0.0.0.0:8000"]
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+
+Labels: Key-value pairs attached to Kubernetes objects (like Pods or Services) for categorizing and identifying them. For example, a Pod might have a label app=nginx.
+
+Selectors: Mechanisms for grouping and managing Kubernetes objects based on their labels. Selectors use these labels to match and interact with specific sets of objects. For example, a Deployment uses a selector app=nginx to manage Pods with that label.
+
+
+vim deployment.yml
+
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-python-app
+  labels:
+    app: sample-python-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-python-app
+  template:
+    metadata:
+      labels:
+        app: sample-python-app
+    spec:
+      containers:
+      - name: python-app
+        image: akhilprabhu2005/kube-service-python:v1
+        ports:
+        - containerPort: 8000
+      imagePullSecrets:
+      - name: my-registry-secret
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+* kubectl create secret docker-registry my-registry-secret \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=akhilprabhu2005 \
+  --docker-password=Akhil@2005\
+  --docker-email=akhilprabhu2005@gmail.com
+
+
+* kubectl get secrets
+* kubectl apply -f deployment.yml
+* kubectl get deploy
+* kubectl get pods -o wide
+Now we can see 2 pods with ip's, if we delete the pod is auto healed but ip is changed, now we are using labels and selectors in the deployment manifest, it checks the label of python-app and it makes a tag/stamp for all the python-app using service discovery.
+
+* minikube ssh
+* curl -L http://10.244.0.7:8000/demo
+service discovery mechanism:
+- Labels & Selectors.
+
+
+
+
+* In our organization  we have an application  k8's cluster the people in an organization want to access it they can by using worker node ip address. If people outside organization cannot have access to worker node of k8's.
+To solve this we have 2 concepts they are node port, load balancing using public ip of worker node.
+
+*** Nodeport
+
+* vim service.yaml
+ 
+apiVersion: v1
+kind: Service
+metadata:
+  name: python-django-app-service
+spec:
+  type: NodePort
+  selector:
+    app: sample-python-app
+  ports:
+    - port: 80
+      # By default and for convenience, the `targetPort` is set to
+      # the same value as the `port` field.
+      targetPort: 8000
+      # Optional field
+      # By default and for convenience, the Kubernetes control plane
+      # will allocate a port from a range (default: 30000-32767)
+      nodePort: 30007
+
+* kubectl apply -f service.yaml
+* kubectl get svc
+Now check the connection by using minikube ssh
+
+*  curl -L http://10.97.41.107:80/demo    - this is nodeport
+
+exit
+* curl -L http://192.168.49.2:30007/demo  
+
+
+Now i can access my website inside minikube vm, but i didn't got it on browser.
+kubectl get svc
+kubectl edit svc python-django-app-service   ( we can also use vim service.yaml)
+change NodePort to LoadBalancer.
+Kubectl get svc
+
+Here we can see the external ip will be pending, because it is minikube we are doing it on local, where if it was doing on cloud platforms, we get ip because cloud providers use cloud managers.
+
+
+
+
+
+
+
+MetalLB can provide you a public ip.
+
+- To check the service discovery just change a name of app in service.yaml
+* kubectl apply -f service.yaml
+* curl -L http://192.168.49.2:30007/demo
+We get error and rollback the changes and try we get the app, this is service discovery.
+
+LOAD BALANCING USING KUBESHARK:
+Configure kubeshark and try to understand.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ERRORS:
+1. After Installing Docker Desktop Getting An error of an WSL2 Distribution Distro and Nothing Worked. By this wsl, minikube, kubectl are unable to work. Here docker daemon/engine wouldn't able to run.
+
+Solution:
+
+a)  To Solve this First i have deleted all of this from Local System. Downloaded the Docker Desktop based on my system compatability. And Docker Desktop installer.
+Changed the Directory path of docker desktop from windows default drive to local disk drive E.
+By this Docker Desktop has started and begun to run.
+Later i have logged in.
+
+
+b) Now i have installed WSL and Configured using Ubuntu distribution. In configuration file i mentioned localhost ip of windows local system.
+To make a connection between WSL ubuntu and docker desktop i have enabled the Expose daemon on tcp://localhost:2375 without TLS. And in resource settings >> wsl integration >> Enable integration with wsl and additional distros.
+Features in development >> Enable host networking.
+
+c) In wsl Ubuntu prompt installed docker cli, minikube, kubectl.
+For docker we used a command to export and curl the port of 2375.
+Here we need to use the docker desktop using command, i used default desktop.
+By this we can make a connection between wsl ubuntu and docker desktop.
+
+d) Now we can start minikube cluster using docker driver.
+
+2. After cloning pythonapp from the GitHub repo, using the docker build image getting the issue of using external python packages which may interupt the system packages. And asked to use virtual env.
+
+Solution:
+
+a) To solve this just added  --break-system-packages to docker file, instead of changing its functionality.
+
+3. After the process of building the image when we tried to create a pods using deployment.yml with the image that we have built getting an error of imagepullbackoff.
+
+Solution:
+
+a) First after building the image push it to dockerhub using docker login.
+b) kubectl create secret docker-registry my-registry-secret \
+  --docker-server=https://index.docker.io/v1/ \
+  --docker-username=akhilprabhu2005 \
+  --docker-password=Akhil@2005\
+  --docker-email=akhilprabhu2005@gmail.com
+
+kubectl get secrets
+
+c) Update the deployment using  imagePullSecrets:
+      - name: my-registry-secret
+ kubectl apply -f deployment.yaml
+ 
