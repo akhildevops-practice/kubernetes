@@ -49,4 +49,4 @@ HOW DO YOU DEBUG PODS/ APPLICATIONS ISSUES IN K8'S?
 - kubectl logs nginx
 
 
-
+ 
